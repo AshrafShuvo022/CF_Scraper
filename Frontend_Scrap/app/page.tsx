@@ -44,12 +44,16 @@ export default function Home() {
   try {
     const response = await fetch(url);
 
-    if (!response.ok) throw new Error("Failed to fetch file");
+    if (!response.ok) {
+      toast.error("❌ Backend responded with error");
+      throw new Error(`Failed response: ${response.status}`);
+    }
 
     const blob = await response.blob();
 
-    if (blob.size === 0) {
-      throw new Error("Empty CSV file");
+    if (!blob || blob.size === 0) {
+      toast.error("❌ Empty CSV received");
+      throw new Error("Received empty CSV");
     }
 
     const downloadUrl = window.URL.createObjectURL(blob);
@@ -64,9 +68,10 @@ export default function Home() {
 
     toast.success("✅ File downloaded successfully!");
   } catch (err) {
-    console.error(err);
-    toast.error("❌ Failed to download the CSV");
+    console.error("❌ Error while downloading:", err);
+    toast.error("❌ Something went wrong while downloading the file.");
   } finally {
+    // Always turn off spinner
     setLoading(false);
   }
 };

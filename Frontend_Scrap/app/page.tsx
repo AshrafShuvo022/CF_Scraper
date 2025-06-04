@@ -30,37 +30,46 @@ export default function Home() {
   };
 
   const downloadCSV = async () => {
-    setShowConfirm(false);
-    setLoading(true);
+  setShowConfirm(false);
+  setLoading(true);
 
-    const query = new URLSearchParams({
-      division,
-      index: index.toUpperCase(),
-      days,
-    });
-    const url = `https://cf-scraper-v3fp.onrender.com/download_csv?${query.toString()}`;
+  const query = new URLSearchParams({
+    division,
+    index: index.toUpperCase(),
+    days,
+  });
 
-    try {
-const response = await fetch(url);
-if (!response.ok) throw new Error("Failed to download file");
+  const url = `https://cf-scraper-v3fp.onrender.com/download_csv?${query.toString()}`;
 
-const blob = await response.blob();
-const downloadUrl = window.URL.createObjectURL(blob);
-const fileName = `cf_${division.replace(/\s/g, "")}_problem_${index.toLowerCase()}.csv`;
+  try {
+    const response = await fetch(url);
 
-const link = document.createElement("a");
-link.href = downloadUrl;
-link.setAttribute("download", fileName);
-document.body.appendChild(link);
-link.click();
-document.body.removeChild(link);
-      toast.success("✅ File downloaded successfully!");
-    } catch (error) {
-      toast.error("❌ Failed to download CSV");
-    } finally {
-      setLoading(false);
+    if (!response.ok) throw new Error("Failed to fetch file");
+
+    const blob = await response.blob();
+
+    if (blob.size === 0) {
+      throw new Error("Empty CSV file");
     }
-  };
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const fileName = `cf_${division.replace(/\s/g, "")}_problem_${index.toLowerCase()}.csv`;
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    toast.success("✅ File downloaded successfully!");
+  } catch (err) {
+    console.error(err);
+    toast.error("❌ Failed to download the CSV");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);

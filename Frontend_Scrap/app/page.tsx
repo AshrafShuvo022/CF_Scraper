@@ -38,7 +38,7 @@ export default function Home() {
       index: index.toUpperCase(),
       days,
     });
-    const url = `http://localhost:8000/download_csv?${query.toString()}`;
+    const url = `https://cf-scraper-v3fp.onrender.com/download_csv?${query.toString()}`;
 
     try {
       const response = await fetch(url);

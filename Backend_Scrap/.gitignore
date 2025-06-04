@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# OS junk
+.DS_Store
+
+# IDE/Editor config
+.vscode/
+.idea/
+
+# Environment variables
+.env

@@ -1,0 +1,21 @@
+# Node modules and build folders
+node_modules/
+.next/
+out/
+
+# Environment variables
+.env.local
+.env
+
+# Logs
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+
+# Optional: lock file if using yarn instead of npm
+yarn.lock

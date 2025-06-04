@@ -11,8 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000",
-        "https://cf-scraper-beryl.vercel.app", ],
+    allow_origins=["http://localhost:3000", "https://cf-scraper-beryl.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,6 +61,47 @@ def match_div(contest_name, selected_div, index):
     elif selected_div == "div. 4":
         return "div. 4" in name
     return False
+
+# API endpoint to fetch preview data (no pagination)
+@app.get("/preview_csv")
+def preview_csv(
+    division: str = Query(..., description="e.g., div. 2"),
+    index: str = Query(..., description="e.g., A"),
+    days: int = Query(..., description="e.g., 365")
+):
+    url = "https://codeforces.com/api/contest.list"
+    response = requests.get(url)
+    if response.status_code != 200 or response.json()["status"] != "OK":
+        return {"error": "Failed to fetch contests."}
+
+    now = datetime.now()
+    from_date = now - timedelta(days=days)
+    results = []
+
+    for contest in response.json()["result"]:
+        if contest["id"] >= 100000 or "startTimeSeconds" not in contest:
+            continue
+
+        contest_name = contest["name"]
+        start_time = datetime.fromtimestamp(contest["startTimeSeconds"])
+        if not (from_date <= start_time <= now):
+            continue
+
+        if not match_div(contest_name, division.lower(), index.upper()):
+            continue
+
+        problem = fetch_problem(contest["id"], index.upper())
+        if problem:
+            results.append({
+                "contest_name": contest_name,
+                "problem_name": problem["name"],
+                "rating": problem["rating"],
+                "tags": problem["tags"],
+                "link": problem["link"],
+                "complete": ""
+            })
+
+    return {"data": results, "total_count": len(results)}
 
 # API endpoint to download CSV
 @app.get("/download_csv")

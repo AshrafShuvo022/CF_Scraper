@@ -27,8 +27,8 @@ export default function Home() {
     e.preventDefault();
     setError("");
 
-    if (!/^[a-zA-Z]$/.test(index)) {
-      setError("❗ Index must be a single letter like A, B, C");
+    if (!/^[A-Za-z]$/.test(index)) {
+      setError("❗ Problem Index must be a single letter (A-Z).");
       return;
     }
     if (isNaN(Number(days)) || Number(days) <= 0) {
@@ -143,89 +143,101 @@ export default function Home() {
         {dark ? "☀ Light" : "🌙 Dark"}
       </button>
 
-      <h2 className="text-4xl font-extrabold text-center mb-6 text-black dark:text-blue-700">
+      <h2 className="text-4xl font-extrabold text-center mb-6 text-black dark:text-blue-600">
         🧠 Recent Codeforces Contest Problems Scraper
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className={`bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 w-full max-w-md space-y-6 border border-gray-200 dark:border-gray-600 ${
-          previewLoading || downloadLoading ? "pointer-events-none opacity-60" : ""
-        }`}
-      >
-        <h1 className="text-2xl font-extrabold text-center text-black dark:text-white">
-          Codeforces CSV Downloader
-        </h1>
+<form
+  onSubmit={handleSubmit}
+  className={`bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 w-full max-w-md space-y-6 border border-gray-200 dark:border-gray-600 ${
+    previewLoading || downloadLoading ? "pointer-events-none opacity-60" : ""
+  }`}
+>
+  <h1 className="text-2xl font-extrabold text-center text-black dark:text-white">
+    Codeforces CSV Downloader
+  </h1>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-800 dark:text-white">Division</label>
-          <select
-            value={division}
-            onChange={(e) => setDivision(e.target.value)}
-            className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-          >
-            <option value="div. 1">Div. 1</option>
-            <option value="div. 2">Div. 2</option>
-            <option value="div. 3">Div. 3</option>
-            <option value="div. 4">Div. 4</option>
-          </select>
-        </div>
+  <div>
+    <label className="block text-sm font-semibold mb-1 text-gray-800 dark:text-white">Division</label>
+    <select
+      value={division}
+      onChange={(e) => setDivision(e.target.value)}
+      className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
+    >
+      <option value="div. 1">Div. 1</option>
+      <option value="div. 2">Div. 2</option>
+      <option value="div. 3">Div. 3</option>
+      <option value="div. 4">Div. 4</option>
+    </select>
+  </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-800 dark:text-white">Problem Index</label>
-          <input
-            value={index}
-            onChange={(e) => setIndex(e.target.value)}
-            placeholder="e.g., A"
-            className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-gray-700 dark:text-white"
-            required
-          />
-        </div>
+  <div>
+    <label className="block text-sm font-semibold mb-1 text-gray-800 dark:text-white">Problem Index</label>
+    <input
+      value={index}
+      onChange={(e) => setIndex(e.target.value.toUpperCase())}
+      placeholder="e.g., A"
+      maxLength={1}
+      className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-gray-700 dark:text-white"
+      required
+      pattern="[A-Za-z]"
+      title="Enter a single letter (A-Z)"
+      inputMode="text"
+    />
+    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+      Enter a single letter (A-Z) for the problem index. Example: A, B, C, etc.
+    </p>
+  </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-800 dark:text-white">Days Back</label>
-          <input
-            type="number"
-            value={days}
-            onChange={(e) => setDays(e.target.value)}
-            className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 dark:bg-gray-700 dark:text-white"
-            required
-          />
-        </div>
+  <div>
+    <label className="block text-sm font-semibold mb-1 text-gray-800 dark:text-white">Days Back</label>
+    <input
+      type="number"
+      value={days}
+      onChange={(e) => setDays(e.target.value)}
+      className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 dark:bg-gray-700 dark:text-white"
+      required
+      min={1}
+      inputMode="numeric"
+    />
+    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+      Enter how many days back to search for contests. Example: 30 for last month.
+    </p>
+  </div>
 
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+  {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-        <p className="text-center text-xs text-gray-600 dark:text-gray-400">
-          📁 File: cf_{division.replace(/\s/g, "")}_problem_{index.toLowerCase()}.csv
-        </p>
+  <p className="text-center text-xs text-gray-600 dark:text-gray-400">
+    📁 File: cf_{division.replace(/\s/g, "")}_problem_{index.toLowerCase()}.csv
+  </p>
 
-        {/* Button to Load Preview */}
-        <button
-          type="button"
-          onClick={fetchPreview}
-          className="w-full flex justify-center items-center gap-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition"
-          disabled={previewLoading}
-        >
-          {previewLoading ? (
-            <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
-          ) : (
-            "Load Preview"
-          )}
-        </button>
+  {/* Button to Load Preview */}
+  <button
+    type="button"
+    onClick={fetchPreview}
+    className="w-full flex justify-center items-center gap-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition"
+    disabled={previewLoading}
+  >
+    {previewLoading ? (
+      <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
+    ) : (
+      "Load Preview"
+    )}
+  </button>
 
-        {/* Button to Download CSV */}
-        <button
-          type="submit"
-          className="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition"
-          disabled={downloadLoading}
-        >
-          {downloadLoading ? (
-            <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
-          ) : (
-            "Download CSV"
-          )}
-        </button>
-      </form>
+  {/* Button to Download CSV */}
+  <button
+    type="submit"
+    className="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition"
+    disabled={downloadLoading}
+  >
+    {downloadLoading ? (
+      <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span>
+    ) : (
+      "Download CSV"
+    )}
+  </button>
+</form>
 
       {/* Progress bar for download loading */}
       {downloadLoading && (
@@ -242,7 +254,7 @@ export default function Home() {
       )}
 
       <div className="w-full max-w-5xl mt-12">
-        <h3 className="text-2xl font-bold mb-4 text-center text-black dark:text-blue-700">
+        <h3 className="text-2xl font-bold mb-4 text-center text-black dark:text-blue-600">
           📊 Sample CSV Preview Table
         </h3>
 

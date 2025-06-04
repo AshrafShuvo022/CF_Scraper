@@ -8,7 +8,7 @@ export default function Home() {
   const [division, setDivision] = useState("div. 2");
   const [index, setIndex] = useState("A");
   const [days, setDays] = useState("365");
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
   const [error, setError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 

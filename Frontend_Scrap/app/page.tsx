@@ -143,7 +143,7 @@ export default function Home() {
         {dark ? "☀ Light" : "🌙 Dark"}
       </button>
 
-      <h2 className="text-4xl font-extrabold text-center mb-6 text-black dark:text-white">
+      <h2 className="text-4xl font-extrabold text-center mb-6 text-black dark:text-blue-700">
         🧠 Recent Codeforces Contest Problems Scraper
       </h2>
 
@@ -242,7 +242,7 @@ export default function Home() {
       )}
 
       <div className="w-full max-w-5xl mt-12">
-        <h3 className="text-2xl font-bold mb-4 text-center text-black dark:text-white">
+        <h3 className="text-2xl font-bold mb-4 text-center text-black dark:text-blue-700">
           📊 Sample CSV Preview Table
         </h3>
 

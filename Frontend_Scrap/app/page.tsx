@@ -41,18 +41,19 @@ export default function Home() {
     const url = `https://cf-scraper-v3fp.onrender.com/download_csv?${query.toString()}`;
 
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Failed to download file");
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const fileName = `cf_${division.replace(/\s/g, "")}_problem_${index.toLowerCase()}.csv`;
+const response = await fetch(url);
+if (!response.ok) throw new Error("Failed to download file");
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", fileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+const blob = await response.blob();
+const downloadUrl = window.URL.createObjectURL(blob);
+const fileName = `cf_${division.replace(/\s/g, "")}_problem_${index.toLowerCase()}.csv`;
+
+const link = document.createElement("a");
+link.href = downloadUrl;
+link.setAttribute("download", fileName);
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
       toast.success("✅ File downloaded successfully!");
     } catch (error) {
       toast.error("❌ Failed to download CSV");
